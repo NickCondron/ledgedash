@@ -21,6 +21,15 @@ fn main() {
     // Init logger
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
 
+    // Urls are relative to your Cargo.toml file
+    const _TAILWIND_URL: &str = {
+        const _: &dyn manganis::ForMgMacro = {
+            use manganis::*;
+            &file("public/tailwind.css")
+        };
+        "/tailwindcssd4b39a1aeb8e7c9f.css"
+    };
+
     let cfg = dioxus::desktop::Config::new()
         .with_custom_head(r#"<link rel="stylesheet" href="tailwind.css">"#.to_string())
         .with_window(
@@ -71,7 +80,8 @@ fn Home() -> Element {
         div {
             class: "grid grid-cols-2",
             div {
-                label { r#for: "upload_replays", "Upload .slp replay files" } input {
+                label { r#for: "upload_replays", "Upload .slp replay files" }
+                input {
                     class: "block",
                     r#type: "file",
                     accept: ".slp",
