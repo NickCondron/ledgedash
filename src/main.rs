@@ -1,6 +1,10 @@
 #![allow(non_snake_case)]
 
-use dioxus::prelude::*;
+use dioxus::{
+    desktop::{LogicalSize, WindowBuilder},
+    prelude::*,
+};
+
 use tracing::Level;
 
 #[derive(Clone, Routable, Debug, PartialEq)]
@@ -18,7 +22,12 @@ fn main() {
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
 
     let cfg = dioxus::desktop::Config::new()
-        .with_custom_head(r#"<link rel="stylesheet" href="tailwind.css">"#.to_string());
+        .with_custom_head(r#"<link rel="stylesheet" href="tailwind.css">"#.to_string())
+        .with_window(
+            WindowBuilder::new()
+                .with_title("Ledgedash")
+                .with_inner_size(LogicalSize::new(800, 700)),
+        );
     LaunchBuilder::desktop().with_cfg(cfg).launch(App);
 }
 
