@@ -1,0 +1,91 @@
+#![allow(non_snake_case)]
+
+use dioxus::prelude::*;
+use tracing::Level;
+
+#[derive(Clone, Routable, Debug, PartialEq)]
+#[rustfmt::skip]
+enum Route {
+    #[layout(NavBar)]
+        #[route("/")]
+        Home {},
+        #[route("/wavedash")]
+        Wavedash {},
+}
+
+fn main() {
+    // Init logger
+    dioxus_logger::init(Level::INFO).expect("failed to init logger");
+
+    let cfg = dioxus::desktop::Config::new()
+        .with_custom_head(r#"<link rel="stylesheet" href="tailwind.css">"#.to_string());
+    LaunchBuilder::desktop().with_cfg(cfg).launch(App);
+}
+
+#[component]
+fn App() -> Element {
+    rsx! {
+        Router::<Route> {}
+    }
+}
+
+#[component]
+fn Wavedash() -> Element {
+    rsx! {
+        div {
+            class: "flex items-center justify-center h-full",
+            "wavedash info"
+        }
+    }
+}
+
+#[component]
+fn Home() -> Element {
+    let mut num = use_signal(|| 0usize);
+
+    let get_replays = move |evt: FormEvent| async move {
+        let Some(file_engine) = evt.files() else {
+            panic!()
+        };
+        *num.write() = file_engine.files().len();
+    };
+
+    rsx! {
+        h2 { "{num}" }
+        input {
+            r#type: "file",
+            accept: ".slp",
+            multiple: true,
+            onchange: get_replays,
+        }
+    }
+}
+
+#[component]
+fn NavBar() -> Element {
+    rsx! {
+        nav {
+            class: "bg-gray-800",
+            ul {
+                class: "flex",
+                li {
+                    class: "mr-6",
+                    Link {
+                        class: "text-blue-500 hover:text-blue-800",
+                        to: Route::Home {},
+                        "Home"
+                    }
+                }
+                li {
+                    class: "mr-6",
+                    Link {
+                        class: "text-blue-500 hover:text-blue-800",
+                        to: Route::Wavedash {},
+                        "Wavedash"
+                    }
+                }
+            }
+        }
+        Outlet::<Route> {}
+    }
+}
