@@ -50,6 +50,7 @@ fn Wavedash() -> Element {
 
 #[component]
 fn Home() -> Element {
+    let mut search_subdirs = use_signal(|| true);
     let mut num = use_signal(|| 0usize);
     let mut name = use_signal(|| None as Option<String>);
 
@@ -67,16 +68,36 @@ fn Home() -> Element {
         if let Some(name) = name() {
             h2 { {name} }
         }
-        input {
-            r#type: "file",
-            accept: ".slp",
-            multiple: true,
-            onchange: get_replays,
-        }
-        input {
-            r#type: "file",
-            directory: true,
-            onchange: get_replays,
+        div {
+            class: "grid grid-cols-2",
+            div {
+                label { r#for: "upload_replays", "Upload .slp replay files" } input {
+                    class: "block",
+                    r#type: "file",
+                    accept: ".slp",
+                    multiple: true,
+                    name: "upload_replays",
+                    onchange: get_replays,
+                }
+            }
+            div {
+                label { r#for: "upload_replay_folder", "Upload folder containing replays" }
+                input {
+                    class: "block",
+                    r#type: "file",
+                    directory: true,
+                    name: "upload_replay_folder",
+                    onchange: get_replays,
+                }
+                label { r#for: "search_subdirs", "Search Subdirectories" }
+                input {
+                    class: "block",
+                    r#type: "checkbox",
+                    id: "search_subdirs",
+                    checked: search_subdirs,
+                    oninput: move |evt| search_subdirs.set(evt.checked()),
+                }
+            }
         }
     }
 }
