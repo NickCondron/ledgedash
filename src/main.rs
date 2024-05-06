@@ -51,20 +51,31 @@ fn Wavedash() -> Element {
 #[component]
 fn Home() -> Element {
     let mut num = use_signal(|| 0usize);
+    let mut name = use_signal(|| None as Option<String>);
 
     let get_replays = move |evt: FormEvent| async move {
         let Some(file_engine) = evt.files() else {
             panic!()
         };
-        *num.write() = file_engine.files().len();
+        let files = file_engine.files();
+        name.set(files.get(0).cloned());
+        num.set(files.len());
     };
 
     rsx! {
         h2 { "{num}" }
+        if let Some(name) = name() {
+            h2 { {name} }
+        }
         input {
             r#type: "file",
             accept: ".slp",
             multiple: true,
+            onchange: get_replays,
+        }
+        input {
+            r#type: "file",
+            directory: true,
             onchange: get_replays,
         }
     }
