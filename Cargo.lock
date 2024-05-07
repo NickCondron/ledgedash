@@ -965,6 +965,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "dioxus-free-icons"
+version = "0.8.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4b60c5a6f9c15bc3b0e12291f8a91162042b9eb5b3015f561185aac813df834"
+dependencies = [
+ "dioxus",
+]
+
+[[package]]
 name = "dioxus-fullstack"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2346,6 +2355,7 @@ name = "ledgedash"
 version = "0.1.0"
 dependencies = [
  "dioxus",
+ "dioxus-free-icons",
  "dioxus-logger",
  "manganis",
  "peppi",

@@ -4,13 +4,27 @@ use dioxus::{
     desktop::{LogicalSize, WindowBuilder},
     prelude::*,
 };
-
 use tracing::Level;
+
+mod components {
+    pub mod button;
+    pub mod sidebar;
+}
+use components::sidebar::SideBar;
+
+const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
+// const _STYLE: &str = {
+//     const _: &dyn manganis::ForMgMacro = {
+//         use manganis::*;
+//         &file("public/tailwind.css")
+//     };
+//     "/tailwindcssfe277c00ea35019e.css"
+// };
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 #[rustfmt::skip]
 enum Route {
-    #[layout(NavBar)]
+    #[layout(SideBar)]
         #[route("/")]
         Home {},
         #[route("/wavedash")]
@@ -21,22 +35,11 @@ fn main() {
     // Init logger
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
 
-    // Urls are relative to your Cargo.toml file
-    const _TAILWIND_URL: &str = {
-        const _: &dyn manganis::ForMgMacro = {
-            use manganis::*;
-            &file("public/tailwind.css")
-        };
-        "/tailwindcssd4b39a1aeb8e7c9f.css"
-    };
-
-    let cfg = dioxus::desktop::Config::new()
-        .with_custom_head(r#"<link rel="stylesheet" href="tailwind.css">"#.to_string())
-        .with_window(
-            WindowBuilder::new()
-                .with_title("Ledgedash")
-                .with_inner_size(LogicalSize::new(800, 700)),
-        );
+    let cfg = dioxus::desktop::Config::new().with_window(
+        WindowBuilder::new()
+            .with_title("Ledgedash")
+            .with_inner_size(LogicalSize::new(800, 700)),
+    );
     LaunchBuilder::desktop().with_cfg(cfg).launch(App);
 }
 
@@ -109,34 +112,5 @@ fn Home() -> Element {
                 }
             }
         }
-    }
-}
-
-#[component]
-fn NavBar() -> Element {
-    rsx! {
-        nav {
-            class: "bg-gray-800",
-            ul {
-                class: "flex",
-                li {
-                    class: "mr-6",
-                    Link {
-                        class: "text-blue-500 hover:text-blue-800",
-                        to: Route::Home {},
-                        "Home"
-                    }
-                }
-                li {
-                    class: "mr-6",
-                    Link {
-                        class: "text-blue-500 hover:text-blue-800",
-                        to: Route::Wavedash {},
-                        "Wavedash"
-                    }
-                }
-            }
-        }
-        Outlet::<Route> {}
     }
 }
