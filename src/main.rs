@@ -4,13 +4,16 @@ use dioxus::{
     desktop::{LogicalSize, WindowBuilder},
     prelude::*,
 };
+use ssbm_data::character::External;
 use tracing::Level;
 
 mod components {
+    pub mod character;
     pub mod player_pick;
     pub mod replay_drop;
     pub mod sidebar;
 }
+use components::character::{CharacterImage, ImageType};
 use components::player_pick::PlayerPick;
 use components::replay_drop::ReplayDrop;
 use components::sidebar::SideBar;
@@ -104,6 +107,11 @@ fn Home() -> Element {
         }
         PlayerPick {
             players: players
+        }
+        CharacterImage {
+            character: External::CaptainFalcon,
+            costume: 0,
+            image_type: ImageType::SelectMelee
         }
     }
 }

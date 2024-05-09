@@ -10,7 +10,7 @@ pub fn SideBar() -> Element {
             div { class: "flex grow flex-col overflow-y-auto bg-gray-900 px-6",
                 div { class: "flex h-16 items-center",
                     img { class: "h-12 w-auto",
-                        src: manganis::mg!(file("assets/ledgedash.png"))
+                        src: manganis::mg!(image("assets/ledgedash.png"))
                     }
                 }
                 nav { class: "flex flex-1 flex-col",
