@@ -64,8 +64,7 @@ pub fn PlayerPick(players: Vec<Player>, on_pick: EventHandler<usize>) -> Element
                             }
                             CharacterImage {
                                 character: player.character.try_into().unwrap(),
-                                costume: player.costume,
-                                image_type: ImageType::SelectMelee,
+                                image_type: ImageType::Css(player.costume),
                             }
                         }
                     }
