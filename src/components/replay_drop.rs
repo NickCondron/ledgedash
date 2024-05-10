@@ -31,7 +31,7 @@ pub fn ReplayDrop(on_slp: EventHandler<String>) -> Element {
     };
 
     rsx! {
-        div { class: "flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10",
+        div { class: "flex justify-center rounded-lg border-2 border-dashed border-gray-900/25 px-6 py-10",
             ondrop: drop_slp,
             ondragover: move |_| {
                 is_drag_over.set(true);
@@ -39,7 +39,7 @@ pub fn ReplayDrop(on_slp: EventHandler<String>) -> Element {
             ondragleave: move |_| {
                 is_drag_over.set(false);
             },
-            class: if is_drag_over() { "border-double border-indigo-400" },
+            class: if is_drag_over() { "border-solid border-indigo-400" },
             div { class: "text-center",
                 // slippi logo
                 svg { class: "mx-auto h-12 w-auto text-gray-300",

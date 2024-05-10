@@ -41,9 +41,9 @@ pub fn SideBar() -> Element {
             }
         }
         main {
-            class: "py-10 pl-72",
+            class: "pl-72",
             div {
-                class: "px-8",
+                class: "p-4",
                 Outlet::<Route> {}
             }
         }
