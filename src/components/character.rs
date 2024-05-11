@@ -6,7 +6,7 @@ use ssbm_data::character::External;
 pub struct CharacterImageProps {
     character: External,
     image_type: ImageType,
-    #[props(extends = img)]
+    #[props(extends = GlobalAttributes)]
     attributes: Vec<Attribute>,
 }
 

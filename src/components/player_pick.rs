@@ -22,7 +22,7 @@ pub fn PlayerPick(players: Vec<Player>, on_pick: EventHandler<usize>) -> Element
             legend { class: "text-base font-semibold text-gray-900", "Select your player" }
             div { class: "grid md:grid-cols-2 gap-2 mt-2",
                 {players.iter().enumerate().map(|(idx, player)| rsx! {
-                    label { class: "cursor-pointer rounded-lg border-2 bg-white p-4 hover:border-indigo-200",
+                    label { class: "cursor-pointer rounded-lg border-2 bg-white p-2 hover:border-indigo-200",
                         class: if idx == selected() { "border-indigo-400 hover:border-indigo-400" },
                         input {
                             r#type: "radio",
@@ -30,7 +30,6 @@ pub fn PlayerPick(players: Vec<Player>, on_pick: EventHandler<usize>) -> Element
                             name: "player",
                             class: "sr-only"
                         }
-                        // TODO better CSS
                         div { class: "grid grid-cols-2 gap-2",
                             span { class: "flex flex-col",
                                 svg {
@@ -58,11 +57,12 @@ pub fn PlayerPick(players: Vec<Player>, on_pick: EventHandler<usize>) -> Element
                                     }
                                 }
                                 p {
-                                    class: "justify-end text-xl font-bold",
+                                    class: "justify-self-end text-xl font-bold",
                                     "{player.port}"
                                 }
                             }
                             CharacterImage {
+                                class: "h-32 justify-self-end",
                                 character: player.character.try_into().unwrap(),
                                 image_type: ImageType::Css(player.costume),
                             }
