@@ -4,6 +4,8 @@ use dioxus::{
     desktop::{LogicalSize, WindowBuilder},
     prelude::*,
 };
+use peppi::{game::immutable::Game, io::slippi};
+use std::io::Cursor;
 use tracing::Level;
 
 pub mod components {
@@ -42,6 +44,7 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    use_context_provider(|| Signal::new(None as Option<Game>));
     rsx! {
         Router::<Route> {}
     }
@@ -56,56 +59,39 @@ fn Technique() -> Element {
 
 #[component]
 fn Home() -> Element {
-    let mock_player1 = peppi::game::Player {
-        port: peppi::game::Port::P1,
-        character: 1,
-        r#type: peppi::game::PlayerType::Human,
-        stocks: 4,
-        costume: 1,
-        team: None,
-        handicap: 1,
-        bitfield: 0,
-        cpu_level: None,
-        offense_ratio: 1.0f32,
-        defense_ratio: 1.0f32,
-        model_scale: 1.0f32,
-        ucf: None,
-        name_tag: None,
-        netplay: Some(peppi::game::Netplay {
-            name: peppi::game::shift_jis::MeleeString("Clown".to_string()),
-            code: peppi::game::shift_jis::MeleeString("CLWN#889".to_string()),
-            suid: None,
-        }),
-    };
+    let mut slp = use_signal(|| None as Option<String>);
+    let parse_game_future: Resource<Result<Option<Game>, peppi::io::Error>> =
+        use_resource(move || async move {
+            let Some(slp) = slp() else {
+                return Ok(None);
+            };
+            // let slp_bytes = tokio::fs::read(slp).await.map_err(peppi::io::Error::Io)?;
+            let slp_bytes = std::fs::read(slp).map_err(peppi::io::Error::Io)?;
+            let game = slippi::de::read(Cursor::new(slp_bytes), None)?;
+            Ok(Some(game))
+        });
 
-    let mock_player2 = peppi::game::Player {
-        port: peppi::game::Port::P2,
-        character: 5,
-        r#type: peppi::game::PlayerType::Human,
-        stocks: 4,
-        costume: 2,
-        team: None,
-        handicap: 1,
-        bitfield: 0,
-        cpu_level: None,
-        offense_ratio: 1.0f32,
-        defense_ratio: 1.0f32,
-        model_scale: 1.0f32,
-        ucf: None,
-        name_tag: Some(peppi::game::shift_jis::MeleeString("KUSH".to_string())),
-        netplay: None,
-    };
-
-    let mut players = Vec::new();
-    players.push(mock_player1);
-    players.push(mock_player2);
     rsx! {
         ReplayDrop {
-            on_slp: move |rp| println!("received {}", rp)
+            on_slp: move |rp| {
+                println!("received {}", rp);
+                slp.set(Some(rp));
+            }
         }
-        PlayerPick {
-            players: players,
-            on_pick: move |p| println!("player {} selected", p)
+        match &*parse_game_future.read_unchecked() {
+            Some(Ok(None)) => None, // no replay provided by user
+            Some(Ok(Some(game))) => rsx! {
+                PlayerPick {
+                    players: game.start.players.clone(),
+                    on_pick: move |p| println!("player {} selected", p)
+                }
+            },
+            Some(Err(_err)) => rsx! {
+                "parse error"
+            },
+            None => rsx! {
+                "app is processing replay"
+            },
         }
     }
 }
